@@ -2,6 +2,7 @@
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace temperaturepredictor
