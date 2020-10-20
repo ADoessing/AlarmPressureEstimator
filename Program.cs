@@ -32,21 +32,21 @@ namespace temperaturepredictor
 
             var connection = new SqlConnection(connectionString);
             var factory = DbProviderFactories.GetFactory(connection);
-            var loader = context.Data.CreateDatabaseLoader(columnLoader);
+            //var loader = context.Data.CreateDatabaseLoader(columnLoader);
 
-            var dbSource = new DatabaseSource(factory, connectionString, "");
+            //var dbSource = new DatabaseSource(factory, connectionString, "");
 
-            var trainData = loader.Load(dbSource);
+            //var trainData = loader.Load(dbSource);
 
             //Load data
-            //var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\source\repos\temperaturepredictor\AlarmDataTestAllStations.csv",
-            //    hasHeader: true, separatorChar: ',');
+            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\farti\source\repos\AlarmPressureEstimator\AlarmDataTestAllStations1.csv",
+                hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
             var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
             // build the model
             var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
-                .Append(context.Regression.Trainers.FastTreeTweedie());
+                .Append(context.Regression.Trainers.FastTree());
 
             var model = pipeline.Fit(testTrainSplit.TrainSet);
 
