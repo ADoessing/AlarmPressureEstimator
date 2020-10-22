@@ -38,7 +38,7 @@ namespace temperaturepredictor
 
         public void SaveAlarmDataset()
         {
-            List<string> stations = GetStations();
+            List<int> stations = KnownGoodStations;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
 
@@ -49,19 +49,54 @@ namespace temperaturepredictor
                         SqlCommand cmd = new SqlCommand($"SELECT MAX(Stores.Stores) as Stores, MAX(Alarm.Alarms) as Alarms, AVG(ALL case when Observations.ParameterId='temp_mean_past1h' then Observations.Value end) as TempMean, AVG(ALL case when Observations.ParameterId= 'humidity_past1h' then Observations.Value end) as Humidty, AVG(ALL case when Observations.ParameterId= 'pressure_at_sea' then Observations.Value end) as Pressure, min(ALL case when Observations.ParameterId= 'temp_min_past1h' then Observations.Value end) as TempMin, max(ALL case when Observations.ParameterId= 'temp_max_past1h' then Observations.Value end) as TempMax FROM Observations JOIN (SELECT Alarms.DateKey, SUM(ALL Alarms.AlarmCount) as Alarms From Alarms Where Alarms.StationId = {stations[i]} AND Alarms.IsValid = 1 Group by Alarms.DateKey) as Alarm ON Alarm.DateKey = Observations.DateKey JOIN (SELECT DISTINCT Subscriptions.StationId, COUNT(Subscriptions.ID) as Stores FROM Subscriptions Group by Subscriptions.StationId) as Stores ON Stores.StationId = Observations.StationId Where Observations.StationId = {stations[i]} AND Observations.IsValid = 1 Group by Alarm.DateKey order by Alarm.Datekey", conn);
                         using SqlDataReader reader = cmd.ExecuteReader();
 
-                        using (StreamWriter writer = new StreamWriter(@"C:\Users\farti\source\repos\AlarmPressureEstimator\AlarmDataTestAllStations1.csv", true))
+                        using (StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\source\repos\temperaturepredictor\AlarmDataTest5.csv", true))
                         {
-                            writer.WriteLine("Alarms,TempMean,Humidity,Pressure,TempMin,TempMax");
+                            if (i == 0)
+                            {
+                                writer.WriteLine("Alarms,TempMean,Humidity,Pressure,TempMin,TempMax");
+                            }
                             while (reader.Read())
+                            {
 
+                                if (String.Equals(reader["Stores"].ToString().Replace(',', '.'), "") || String.Equals(reader["Alarms"].ToString().Replace(',', '.'), "") || String.Equals(reader["TempMean"].ToString().Replace(',', '.'), "") || String.Equals(reader["Humidty"].ToString().Replace(',', '.'), "") || String.Equals(reader["Pressure"].ToString().Replace(',', '.'), "") || String.Equals(reader["TempMin"].ToString().Replace(',', '.'), "") || String.Equals(reader["TempMax"].ToString().Replace(',', '.'), ""))
+                                {
+                                    continue;
+                                }
 
                                 writer.WriteLine("{0},{1},{2},{3},{4},{5},{6}",
                                          reader["Stores"].ToString().Replace(',', '.'), reader["Alarms"].ToString().Replace(',', '.'), reader["TempMean"].ToString().Replace(',', '.'), reader["Humidty"].ToString().Replace(',', '.'), reader["Pressure"].ToString().Replace(',', '.'), reader["TempMin"].ToString().Replace(',', '.'), reader["TempMax"].ToString().Replace(',', '.'));
+                            }
                         }
                     }
 
                 }
             }
+        }
+
+        public TemperatureData GetNewestWeatherforecastByStationId(int StationId)
+        {
+            TemperatureData temperatureData = new TemperatureData { };
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                SqlCommand sqlCommand = new SqlCommand($"SELECT Stores, TempMean, Humidity, Pressure, TempMin, TempMax FROM ForecastsFromArima WHERE Date = (SELECT MAX(DATE) FROM ForecastsFromArima) AND StationId = {StationId}", conn);
+                {
+                    conn.Open();
+                    using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+                    while (sqlDataReader.Read())
+                    {
+                        temperatureData = new TemperatureData
+                        {
+                            Stores = (float)sqlDataReader["Stores"],
+                            TempMean = (float)sqlDataReader["TempMean"],
+                            Humidity = (float)sqlDataReader["Humidity"],
+                            Pressure = (float)sqlDataReader["Pressure"],
+                            TempMin = (float)sqlDataReader["TempMin"],
+                            TempMax = (float)sqlDataReader["TempMax"]
+                        };
+                    }
+                }
+            }
+            return temperatureData;
         }
     }
 }

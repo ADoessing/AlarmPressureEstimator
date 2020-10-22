@@ -39,14 +39,14 @@ namespace temperaturepredictor
             //var trainData = loader.Load(dbSource);
 
             //Load data
-            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\farti\source\repos\AlarmPressureEstimator\AlarmDataTestAllStations1.csv",
+            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\source\repos\temperaturepredictor\AlarmDataTest5.csv",
                 hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
             var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
             // build the model
             var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
-                .Append(context.Regression.Trainers.FastTree());
+                .Append(context.Regression.Trainers.FastTreeTweedie());
 
             var model = pipeline.Fit(testTrainSplit.TrainSet);
 
@@ -56,6 +56,7 @@ namespace temperaturepredictor
             var metrics = context.Regression.Evaluate(predictions);
 
             Console.WriteLine($"R^2 - {metrics.RSquared}");
+            Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
             //predict
             var newData = new TemperatureData
             {
