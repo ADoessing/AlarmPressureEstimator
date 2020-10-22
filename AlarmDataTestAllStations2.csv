@@ -1,4 +1,4 @@
-Alarms,TempMean,Humidity,Pressure,TempMin,TempMax
+Stores,Alarms,TempMean,Humidity,Pressure,TempMin,TempMax
 22,3,5.116666,95.250000,988.625000,3.7000,6.5000
 22,9,3.741666,96.083333,999.025000,2.2000,6.3000
 22,6,1.500000,98.500000,979.170833,-0.1000,4.1000

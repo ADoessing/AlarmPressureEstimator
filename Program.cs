@@ -72,7 +72,7 @@ namespace temperaturepredictor
             var prediction = predictionFunc.Predict(newData);
 
             //DdHelper ddHelper = new DdHelper();
-            //ddHelper.SaveAlarmDataset();
+            ddHelper.SaveExtendedAlarmDataset();
 
             Console.WriteLine($"Prediction - {prediction.PredictedTemperature}");
             Console.ReadLine();
