@@ -10,7 +10,8 @@ namespace temperaturepredictor
     public class DdHelper
     {
         private string ConnectionString = "Server=akctest01.database.windows.net;Database=akctestdb01;uid=DMIuserLogin;password=DmiLogin34!DK;Trusted_Connection=false";
-        List<int> KnownGoodStations = new List<int>() { 06056, 06068, 06116, 06126, 06123, 06032, 06074, 06119, 06149, 06065, 06124, 06058, 06041, 06049, 06147 };
+        List<string> KnownGoodStations = new List<string>() { "06056", "06068", "06116", "06126", "06123", "06032", "06074", "06119", "06149", "06065", "06124", "06058", "06041", "06049", "06147" };
+        List<string> MoreStations = new List<string>() {"06197", "06181", "06184", "06051"};
 
         public string GetConnectionString()
         {
@@ -57,7 +58,7 @@ namespace temperaturepredictor
 
         public void SaveExtendedAlarmDataset()
         {
-            List<string> stations = GetStations();
+            List<string> stations = MoreStations;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
 
@@ -75,7 +76,7 @@ namespace temperaturepredictor
                             using SqlDataReader reader = cmd2.ExecuteReader();
                             Console.WriteLine("test igen igen");
 
-                            using (StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\AlarmDataTest6.csv", true))
+                            using (StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\AlarmDataTest7.csv", true))
                             {
                                 Console.WriteLine("endnu en test");
                                 if (i == 0 && counter == 0)
@@ -104,7 +105,7 @@ namespace temperaturepredictor
 
         public void SaveAlarmDataset()
         {
-            List<int> stations = KnownGoodStations;
+            List<string> stations = KnownGoodStations;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
 
