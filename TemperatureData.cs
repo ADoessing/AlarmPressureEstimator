@@ -11,18 +11,21 @@ namespace temperaturepredictor
         public float Alarms;
 
         [LoadColumn(2)]
-        public float TempMean;
+        public float AlarmItems;
 
         [LoadColumn(3)]
-        public float Humidity;
+        public float TempMean;
 
         [LoadColumn(4)]
-        public float Pressure;
+        public float Humidity;
 
         [LoadColumn(5)]
-        public float TempMin;
+        public float Pressure;
 
         [LoadColumn(6)]
+        public float TempMin;
+
+        [LoadColumn(7)]
         public float TempMax;
     }
 }

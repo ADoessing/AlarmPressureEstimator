@@ -165,5 +165,19 @@ namespace temperaturepredictor
             }
             return temperatureData;
         }
+
+        public void UploadNewestAlarmPrediction(string Date, string StationId, int Alarms)
+        {
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                SqlCommand cmd = new SqlCommand($"INSERT INTO ForecastsFromArima(Date, StationId, Alarms) Values(@Date, @StationId, @Alarms)", conn);
+                cmd.Parameters.AddWithValue("@Date", Date);
+                cmd.Parameters.AddWithValue("@StationId", StationId);
+                cmd.Parameters.AddWithValue("@Alarms", Alarms);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
     }
 }

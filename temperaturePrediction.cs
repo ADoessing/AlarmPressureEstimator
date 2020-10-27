@@ -2,10 +2,10 @@
 
 namespace temperaturepredictor
 {
-    public class temperaturePrediction
+    public class AlarmPressurePrediction
     {
 
         [ColumnName("Score")]
-        public float PredictedTemperature { get; set; }
+        public float PredictedAlarmPressure { get; set; }
     }
 }

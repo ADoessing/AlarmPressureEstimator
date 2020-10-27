@@ -39,13 +39,13 @@ namespace temperaturepredictor
             //var trainData = loader.Load(dbSource);
 
             //Load data
-            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\source\repos\temperaturepredictor\AlarmDataTest5.csv",
+            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTest4(2).csv",
                 hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
             var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
             // build the model
-            var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
+            var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "AlarmItems", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
                 .Append(context.Regression.Trainers.FastTreeTweedie());
 
             var model = pipeline.Fit(testTrainSplit.TrainSet);
@@ -61,20 +61,21 @@ namespace temperaturepredictor
             var newData = new TemperatureData
             {
                 Stores = 55F,
+                AlarmItems = 1607F,
                 TempMean = 13.10F,
                 Humidity = 83.541666F,
                 Pressure = 1025.062500F,
                 TempMin = 9.6F,
                 TempMax = 17.2F
             };
-            var predictionFunc = context.Model.CreatePredictionEngine<TemperatureData, temperaturePrediction>(model);
+            var predictionFunc = context.Model.CreatePredictionEngine<TemperatureData, AlarmPressurePrediction>(model);
 
             var prediction = predictionFunc.Predict(newData);
 
             //DdHelper ddHelper = new DdHelper();
             //ddHelper.SaveExtendedAlarmDataset();
 
-            Console.WriteLine($"Prediction - {prediction.PredictedTemperature}");
+            Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
             Console.ReadLine();
 
         }
