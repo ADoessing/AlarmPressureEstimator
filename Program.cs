@@ -39,7 +39,7 @@ namespace temperaturepredictor
             //var trainData = loader.Load(dbSource);
 
             //Load data
-            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTest4(2).csv",
+            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTestAllStationsPerfect.csv",
                 hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
@@ -73,7 +73,7 @@ namespace temperaturepredictor
             var prediction = predictionFunc.Predict(newData);
 
             //DdHelper ddHelper = new DdHelper();
-            //ddHelper.SaveExtendedAlarmDataset();
+            //ddHelper.SavePerfectAlarmDataset();
 
             Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
             Console.ReadLine();
