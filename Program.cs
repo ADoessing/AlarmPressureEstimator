@@ -4,34 +4,36 @@ using Microsoft.ML.Data;
 using System;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.IO;
+using System.Net.Http;
 
 namespace temperaturepredictor
 {
     class Program
     {
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
             DdHelper ddHelper = new DdHelper();
             var context = new MLContext();
 
-            var builder = new ConfigurationBuilder();
+            //var builder = new ConfigurationBuilder();
 
-            var configuration = builder.Build();
-            var connectionString = ddHelper.GetConnectionString();
-            var columnLoader = new DatabaseLoader.Column[]
-            {
-                new DatabaseLoader.Column() {Name="Stores",Type=System.Data.DbType.Int32},
-                new DatabaseLoader.Column() {Name="Alarms",Type=System.Data.DbType.Int32},
-                new DatabaseLoader.Column() {Name="TempMean",Type=System.Data.DbType.Decimal},
-                new DatabaseLoader.Column() {Name="Humidity",Type=System.Data.DbType.Int32},
-                new DatabaseLoader.Column() {Name="Pressure",Type=System.Data.DbType.Decimal},
-                new DatabaseLoader.Column() {Name="TempMin",Type=System.Data.DbType.Decimal},
-                new DatabaseLoader.Column() {Name="TempMax",Type=System.Data.DbType.Decimal}
+            //var configuration = builder.Build();
+            //var connectionString = ddHelper.GetConnectionString();
+            //var columnLoader = new DatabaseLoader.Column[]
+            //{
+            //    new DatabaseLoader.Column() {Name="Stores",Type=System.Data.DbType.Int32},
+            //    new DatabaseLoader.Column() {Name="Alarms",Type=System.Data.DbType.Int32},
+            //    new DatabaseLoader.Column() {Name="TempMean",Type=System.Data.DbType.Decimal},
+            //    new DatabaseLoader.Column() {Name="Humidity",Type=System.Data.DbType.Int32},
+            //    new DatabaseLoader.Column() {Name="Pressure",Type=System.Data.DbType.Decimal},
+            //    new DatabaseLoader.Column() {Name="TempMin",Type=System.Data.DbType.Decimal},
+            //    new DatabaseLoader.Column() {Name="TempMax",Type=System.Data.DbType.Decimal}
 
-            };
+            //};
 
-            var connection = new SqlConnection(connectionString);
-            var factory = DbProviderFactories.GetFactory(connection);
+            //var connection = new SqlConnection(connectionString);
+            //var factory = DbProviderFactories.GetFactory(connection);
             //var loader = context.Data.CreateDatabaseLoader(columnLoader);
 
             //var dbSource = new DatabaseSource(factory, connectionString, "");
@@ -39,24 +41,36 @@ namespace temperaturepredictor
             //var trainData = loader.Load(dbSource);
 
             //Load data
-            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTestAllStationsPerfect.csv",
-                hasHeader: true, separatorChar: ',');
+            DataViewSchema modelSchema;
+            ITransformer trainedModel;
+
+            using (HttpClient client = new HttpClient())
+            {
+                Stream modelFile = await client.GetStreamAsync("https://cdn-125.anonfiles.com/Ve06Z7l1pc/b63dfdb6-1604313060/model.zip");
+
+                trainedModel = context.Model.Load(modelFile, out modelSchema);
+            }
+
+            //var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTestAllStationsPerfect.csv",
+            //    hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
-            var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
+            //var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
             // build the model
-            var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "AlarmItems", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
-                .Append(context.Regression.Trainers.FastTreeTweedie());
+            //var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "AlarmItems", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
+            //    .Append(context.Regression.Trainers.FastTreeTweedie());
 
-            var model = pipeline.Fit(testTrainSplit.TrainSet);
+            //var model = pipeline.Fit(testTrainSplit.TrainSet);
+
+            //context.Model.Save(model, trainData.Schema, "model.zip");
 
             //evalutae 
-            var predictions = model.Transform(testTrainSplit.TestSet);
+            //var predictions = model.Transform(testTrainSplit.TestSet);
 
-            var metrics = context.Regression.Evaluate(predictions);
+            //var metrics = context.Regression.Evaluate(predictions);
 
-            Console.WriteLine($"R^2 - {metrics.RSquared}");
-            Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
+            //Console.WriteLine($"R^2 - {metrics.RSquared}");
+            //Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
             //predict
             var newData = new TemperatureData
             {
@@ -68,16 +82,16 @@ namespace temperaturepredictor
                 TempMin = 9.6F,
                 TempMax = 17.2F
             };
-            var predictionFunc = context.Model.CreatePredictionEngine<TemperatureData, AlarmPressurePrediction>(model);
+            var predictionFunc = context.Model.CreatePredictionEngine<TemperatureData, AlarmPressurePrediction>(trainedModel);
 
             var prediction = predictionFunc.Predict(newData);
-
+            
             //DdHelper ddHelper = new DdHelper();
             //ddHelper.SavePerfectAlarmDataset();
 
             Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
             Console.ReadLine();
-
+            
         }
 
     }
