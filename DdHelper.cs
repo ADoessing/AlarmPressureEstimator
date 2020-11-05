@@ -171,7 +171,6 @@ namespace temperaturepredictor
 
                             using (StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTestAllStationsPerfect.csv", true))
                             {
-                                Console.WriteLine("endnu en test");
                                 if (i == 0 && counter == 0)
                                 {
                                     //writer.WriteLine("Stores,Alarms,AlarmItems,TempMean,Humidity,Pressure,TempMin,TempMax");
