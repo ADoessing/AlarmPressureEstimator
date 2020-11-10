@@ -41,16 +41,16 @@ namespace temperaturepredictor
         private List<string> GetObservationDate(string ID)
         {
             List<string> oberservationDates = new List<string>();
-            using(SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 SqlCommand cmd = new SqlCommand($"SELECT DISTINCT Observations.DateKey From Observations Where Observations.StationId={ID} Order by DateKey", conn);
                 {
                     conn.Open();
                     using SqlDataReader reader = cmd.ExecuteReader();
 
-                    while(reader.Read())
+                    while (reader.Read())
                     {
-                        oberservationDates.Add(reader["DateKey"].ToString().Substring(6,4) + "-" + reader["DateKey"].ToString().Substring(3,2) + "-" + reader["DateKey"].ToString().Substring(0,2));
+                        oberservationDates.Add(reader["DateKey"].ToString().Substring(6, 4) + "-" + reader["DateKey"].ToString().Substring(3, 2) + "-" + reader["DateKey"].ToString().Substring(0, 2));
                     }
                 }
             }
@@ -307,5 +307,70 @@ namespace temperaturepredictor
             return ReturnValue;
         }
 
+        public int GetRegionIdFromStationId(string StationId)
+        {
+            int regionId = 0;
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                SqlCommand cmd = new SqlCommand($"SELECT DISTINCT RegionId FROM Stations WHERE Id={StationId.Trim('"')}", conn);
+                conn.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    regionId = Convert.ToInt32(reader["RegionId"].ToString());
+                }
+            }
+            return regionId;
+        }
+
+
+        public void SavePerfectAlarmDataset2()
+        {
+            List<string> stations = MoreStations;
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+
+                {
+                    conn.Open();
+                    for (int i = 0; i < stations.Count; i++)
+                    {
+                        Console.WriteLine("test");
+                        List<string> dates = GetObservationDate(stations[i]);
+                        for (int counter = 0; counter < dates.Count; counter++)
+                        {
+                            Console.WriteLine("test igen");
+
+                            SqlCommand cmd2 = new SqlCommand($"SELECT TOP 1 MAX(Stores.Stores) as Stores, MAX(Alarm.Alarms) as Alarms, MAX(AlarmItem.AlarmItems) as AlarmItems, AVG(ALL case when Observations.ParameterId='temp_mean_past1h' then Observations.Value end) as TempMean, AVG(ALL case when Observations.ParameterId= 'humidity_past1h' then Observations.Value end) as Humidty, IIF(NULLIF((SELECT AVG(ALL case when Observations.ParameterId= 'pressure_at_sea' then Observations.Value end) as Pressure FROM Observations Where StationId = {stations[i]} Group by DateKey), NULL) = NULL, (SELECT TOP 1 AVG(ALL case when Observations.ParameterId= 'pressure_at_sea' then Observations.Value end) as Pressure FROM Observations where StationId = {stations[i]} Group by DateKey),(SELECT TOP 1 AVG(ALL case when Observations.ParameterId= 'pressure_at_sea' then Observations.Value end) as Pressure FROM Observations Where RegionId = (SELECT TOP 1 RegionId FROM Subscriptions Where StationId = {stations[i]}) Group by DateKey)) as Pressure, min(ALL case when Observations.ParameterId= 'temp_min_past1h' then Observations.Value end) as TempMin, max(ALL case when Observations.ParameterId= 'temp_max_past1h' then Observations.Value end) as TempMax FROM Observations JOIN (SELECT Alarms.DateKey, SUM(ALL Alarms.AlarmCount) as Alarms From Alarms Where Alarms.StationId = {stations[i]} AND Alarms.IsValid = 1 Group by Alarms.DateKey) as Alarm ON Alarm.DateKey = Observations.DateKey JOIN (SELECT DISTINCT Subscriptions.StationId, COUNT(Subscriptions.ID) as Stores, MIN(Subscriptions.StartDate) as StartDate FROM Subscriptions WHERE Subscriptions.StartDate BETWEEN (SELECT MIN(Subscriptions.StartDate) FROM Subscriptions where StationId = {stations[i]}) AND '{dates[counter]}' Group by Subscriptions.StationId) as Stores ON Stores.StationId = Observations.StationId JOIN(SELECT SUM(Subscriptions.AlarmItems) as AlarmItems, Subscriptions.StationId FROM Subscriptions Where Subscriptions.StartDate Between (SELECT MIN(Subscriptions.StartDate) FROM Subscriptions Where StationId = {stations[i]}) AND '{dates[counter]}' Group by Subscriptions.StationId) as AlarmItem ON AlarmItem.StationId = Observations.StationId Where Observations.StationId = {stations[i]} AND Observations.IsValid = 1 AND Alarm.Datekey = '{dates[counter]}' Group by Alarm.DateKey order by Alarm.Datekey", conn);
+                            using SqlDataReader reader = cmd2.ExecuteReader();
+                            Console.WriteLine("test igen igen");
+
+                            using (StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\AlarmDataTestAllStationsPerfectTestTest.csv", true))
+                            {
+                                Console.WriteLine("endnu en test");
+                                if (i == 0 && counter == 0)
+                                {
+                                    writer.WriteLine("Stores,Alarms,AlarmItems,TempMean,Humidity,Pressure,TempMin,TempMax");
+                                }
+                                while (reader.Read())
+                                {
+
+                                    if (String.Equals(reader["Pressure"].ToString().Replace(',', '.'), ""))
+                                    {
+
+                                    }
+
+
+
+                                    writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7}",
+                                             reader["Stores"].ToString().Replace(',', '.'), reader["Alarms"].ToString().Replace(',', '.'), reader["AlarmItems"].ToString().Replace(',', '.'), reader["TempMean"].ToString().Replace(',', '.'), reader["Humidty"].ToString().Replace(',', '.'), reader["Pressure"].ToString().Replace(',', '.'), reader["TempMin"].ToString().Replace(',', '.'), reader["TempMax"].ToString().Replace(',', '.'));
+                                }
+                            }
+                        }
+                        dates.Clear();
+                    }
+
+                }
+            }
+        }
     }
 }
