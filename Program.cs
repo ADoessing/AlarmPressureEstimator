@@ -68,7 +68,7 @@ namespace temperaturepredictor
             //var prediction = predictionFunc.Predict(newData);
 
             //DdHelper ddHelper = new DdHelper();
-            ddHelper.SavePerfectAlarmDataset2();
+            ddHelper.SavePerfectAlarmDataset3();
 
             //var values = ddHelper.GetNewestWeatherforecastByStationId("06056", 1);
             //Console.WriteLine(values.Item2.Substring(6, 4) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(3, 2)) + 1).ToString() + "-" + values.Item2.ToString().Substring(0, 2));
