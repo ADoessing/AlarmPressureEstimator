@@ -28,27 +28,27 @@ namespace temperaturepredictor
             //    trainedModel = context.Model.Load(modelFile, out modelSchema);
             //}
 
-            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\source\repos\temperaturepredictor\Csvs\FixedDataTestAll(3)2.csv",
+            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\fourthlastset.csv",
                 hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
             var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
             // build the model
             var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "AlarmItems", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
-                .Append(context.Regression.Trainers.FastTree());
+                .Append(context.Regression.Trainers.FastTreeTweedie());
 
             var model = pipeline.Fit(testTrainSplit.TrainSet);
 
             //context.Model.Save(model, trainData.Schema, "model.zip");
 
-            ////evalutae 
-            //var predictions = model.Transform(testTrainSplit.TestSet);
+            ////evaluate
+            StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\results.txt", true);
+            var predictions = model.Transform(testTrainSplit.TestSet);
 
-            //var metrics = context.Regression.Evaluate(predictions);
+            var metrics = context.Regression.Evaluate(predictions);
 
-            //Console.WriteLine($"R^2 - {metrics.RSquared}");
-            //Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
-
+            Console.WriteLine($"R^2 - {metrics.RSquared}");
+            Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
 
 
 
@@ -73,20 +73,22 @@ namespace temperaturepredictor
             //var values = ddHelper.GetNewestWeatherforecastByStationId("06056", 1);
             //Console.WriteLine(values.Item2.Substring(6, 4) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(3, 2)) + 1).ToString() + "-" + values.Item2.ToString().Substring(0, 2));
 
-            List<string> Stations = ddHelper.GetStations();
-            for (int i = 0; i < Stations.Count; i++)
-            {
-                for (int j = 1; j <= 7; j++)
-                {
-                    var values = ddHelper.GetNewestWeatherforecastByStationId(Stations[i], j);
-                    prediction = predictionFunc.Predict(values.Item1);
-                    var date = values.Item2.Substring(6, 4) + "-" + values.Item2.ToString().Substring(3, 2) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(0, 2)) + j).ToString();
-                    Console.WriteLine(values.Item2.Substring(6, 4) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(0, 2)) + j).ToString() + "-" + values.Item2.ToString().Substring(3, 2));
-                    ddHelper.UploadNewestAlarmPrediction(date, Stations[i], Convert.ToInt32(prediction.PredictedAlarmPressure));
-                }
-            }
+            //List<string> Stations = ddHelper.GetStations();
+            //for (int i = 0; i < Stations.Count; i++)
+            //{
+            //    for (int j = 1; j <= 7; j++)
+            //    {
+            //        var values = ddHelper.GetNewestWeatherforecastByStationId(Stations[i], j);
+            //        prediction = predictionFunc.Predict(values.Item1);
+            //        var date = values.Item2.Substring(6, 4) + "-" + values.Item2.ToString().Substring(3, 2) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(0, 2)) + j).ToString();
+            //        Console.WriteLine(values.Item2.Substring(6, 4) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(0, 2)) + j).ToString() + "-" + values.Item2.ToString().Substring(3, 2));
+            //        ddHelper.UploadNewestAlarmPrediction(date, Stations[i], Convert.ToInt32(prediction.PredictedAlarmPressure));
+            //    }
+            //}
 
             //Console.WriteLine("Færdig");
+            writer.WriteLine($"R^2 - {metrics.RSquared}" + ", " + $"RMSE - {metrics.RootMeanSquaredError}" +", "+$"Prediction - {prediction.PredictedAlarmPressure}");
+            writer.Close();
             Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
             Console.ReadLine();
 
