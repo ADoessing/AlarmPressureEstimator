@@ -13,7 +13,7 @@ namespace temperaturepredictor
     {
         private string ConnectionString = "Server=akctest01.database.windows.net;Database=akctestdb01;uid=DMIuserLogin;password=DmiLogin34!DK;Trusted_Connection=false";
         List<string> KnownGoodStations = new List<string>() {/* "06056", "06068", "06116", "06126", "06123", "06032", "06074", "06119", "06149", "06065",*/ "06124", "06058", "06041", "06049", "06147" };
-        List<string> MoreStations = new List<string>() {/* "06159", "06135", "06132", "06186", "06082", "06073", "06072", "06102", "06183", "06096", "06188", "06138", "06141", "06031", "06081",*/ "06093", "06168", "06088", "06169", "06136"/*, "06174", "06154", "06193", "06156", "06019", "06197", "06181", "06184", "06051"*/};
+        List<string> MoreStations = new List<string>() { /*"06159", "06135", "06132", "06186", "06082", "06073", "06072", "06102", "06183", "06096", "06188", "06138", "06141", "06031", "06081", "06093", "06168", "06088", "06169", "06136", "06174", "06154", "06193", "06156", "06019",*/ "06197", "06181", "06184", "06051"};
 
         public string GetConnectionString()
         {
@@ -144,7 +144,7 @@ namespace temperaturepredictor
                             using SqlDataReader reader = cmd2.ExecuteReader();
                             Console.WriteLine("test igen igen");
 
-                            using (StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\source\repos\temperaturepredictor\Csvs\FixedDataTestAll(3)2.csv", true))
+                            using (StreamWriter writer = new StreamWriter(@"D:\Users\Asmus\LastSetMoreStations.csv", true))
                             {
                                 Console.WriteLine("endnu en test");
                                 if (i == 0 && counter == 0)

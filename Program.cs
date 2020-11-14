@@ -32,23 +32,23 @@ namespace temperaturepredictor
                 hasHeader: true, separatorChar: ',');
 
             //splits data into test and train sets.
-            var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
+            //var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
             // build the model
-            var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "AlarmItems", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
-                .Append(context.Regression.Trainers.FastTreeTweedie());
+            //var pipeline = context.Transforms.Concatenate("Features", new[] { "Stores", "AlarmItems", "TempMean", "Humidity", "Pressure", "TempMin", "TempMax" })
+            //    .Append(context.Regression.Trainers.FastTreeTweedie());
 
-            var model = pipeline.Fit(testTrainSplit.TrainSet);
+            //var model = pipeline.Fit(testTrainSplit.TrainSet);
 
             //context.Model.Save(model, trainData.Schema, "model.zip");
 
             ////evaluate
-            StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\results.txt", true);
-            var predictions = model.Transform(testTrainSplit.TestSet);
+            //StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\results.txt", true);
+            //var predictions = model.Transform(testTrainSplit.TestSet);
 
-            var metrics = context.Regression.Evaluate(predictions);
+            //var metrics = context.Regression.Evaluate(predictions);
 
-            Console.WriteLine($"R^2 - {metrics.RSquared}");
-            Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
+            //Console.WriteLine($"R^2 - {metrics.RSquared}");
+            //Console.WriteLine($"RMSE - {metrics.RootMeanSquaredError}");
 
 
 
@@ -63,12 +63,12 @@ namespace temperaturepredictor
                 TempMin = 9.6F,
                 TempMax = 17.2F
             };
-            var predictionFunc = context.Model.CreatePredictionEngine<TemperatureData, AlarmPressurePrediction>(model);
+            //var predictionFunc = context.Model.CreatePredictionEngine<TemperatureData, AlarmPressurePrediction>(model);
 
-            var prediction = predictionFunc.Predict(newData);
+            //var prediction = predictionFunc.Predict(newData);
 
             //DdHelper ddHelper = new DdHelper();
-            //ddHelper.SavePerfectAlarmDataset3();
+            ddHelper.SavePerfectAlarmDataset();
 
             //var values = ddHelper.GetNewestWeatherforecastByStationId("06056", 1);
             //Console.WriteLine(values.Item2.Substring(6, 4) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(3, 2)) + 1).ToString() + "-" + values.Item2.ToString().Substring(0, 2));
@@ -86,11 +86,11 @@ namespace temperaturepredictor
             //    }
             //}
 
-            //Console.WriteLine("Færdig");
-            writer.WriteLine($"R^2 - {metrics.RSquared}" + ", " + $"RMSE - {metrics.RootMeanSquaredError}" +", "+$"Prediction - {prediction.PredictedAlarmPressure}");
-            writer.Close();
-            Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
-            Console.ReadLine();
+            Console.WriteLine("Færdig");
+            //writer.WriteLine($"R^2 - {metrics.RSquared}" + ", " + $"RMSE - {metrics.RootMeanSquaredError}" +", "+$"Prediction - {prediction.PredictedAlarmPressure}");
+            //writer.Close();
+            //Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
+            //Console.ReadLine();
 
         }
 
