@@ -354,5 +354,27 @@ namespace temperaturepredictor
             }
             return Dataset;
         }
+
+
+        public void fillDataSetTable(int Stores, int Alarms, int AlarmItems, double TempMean, double Humidity, double Pressure, double TempMin, double TempMax)
+        {
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                SqlCommand cmd = new SqlCommand("INSERT INTO Dataset(Stores, Alarms, AlarmItems, TempMean, Humidity, Pressure, TempMin, TempMax) VALUES(@Stores, @Alarms, @AlarmItems, @TempMean, @Humidity, @Pressure, @TempMin, @TempMax)", conn);
+                cmd.Parameters.AddWithValue("@Stores", Stores);
+                cmd.Parameters.AddWithValue("@Alarms", Alarms);
+                cmd.Parameters.AddWithValue("@AlarmItems", AlarmItems);
+                cmd.Parameters.AddWithValue("@TempMean", TempMean);
+                cmd.Parameters.AddWithValue("@Humidity", Humidity);
+                cmd.Parameters.AddWithValue("@Pressure", Pressure);
+                cmd.Parameters.AddWithValue("@TempMin", TempMin);
+                cmd.Parameters.AddWithValue("@TempMax", TempMax);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+                
+
+        }
     }
 }
