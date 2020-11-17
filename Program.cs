@@ -30,8 +30,10 @@ namespace temperaturepredictor
             //    trainedModel = context.Model.Load(modelFile, out modelSchema);
             //}
 
-            var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\LastSet4.csv",
-                hasHeader: true, separatorChar: ',');
+            //var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\LastSet4.csv",
+            //    hasHeader: true, separatorChar: ',');
+
+            var trainData = context.Data.LoadFromEnumerable(ddHelper.GetDataSet());
 
             //splits data into test and train sets.
             var testTrainSplit = context.Data.TrainTestSplit(trainData, testFraction: 0.30);
@@ -95,16 +97,16 @@ namespace temperaturepredictor
             Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
             //Console.ReadLine();
 
-            var items = File.ReadAllLines(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\LastSet4.csv").Skip(1).Select(line => line.Split(",")).Select(i => i);
-            foreach (string[] i in items)
-            {
-                ddHelper.fillDataSetTable(Convert.ToInt32(i[0]), Convert.ToInt32(i[1]), Convert.ToInt32(i[2]), Convert.ToDouble(i[3]), Convert.ToDouble(i[4]), Convert.ToDouble(i[5]), Convert.ToDouble(i[6]), Convert.ToDouble(i[7]));
-            }
+            //var items = File.ReadAllLines(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\LastSet4.csv").Skip(1).Select(line => line.Split(",")).Select(i => i);
+            //foreach (string[] i in items)
+            //{
+            //    ddHelper.fillDataSetTable(Convert.ToInt32(i[0]), Convert.ToInt32(i[1]), Convert.ToInt32(i[2]), Convert.ToDouble(i[3].Replace('.',',')), Convert.ToDouble(i[4].Replace('.',',')), Convert.ToDouble(i[5].Replace('.',',')), Convert.ToDouble(i[6].Replace('.',',')), Convert.ToDouble(i[7].Replace('.',',')));
+            //}
 
-            if (DateTime.Now.AddDays(1).Day == 1)
-            {
-                ddHelper.UpdateDataset(DateTime.Now.AddMonths(-1).Date.ToString().Substring(6, 4) + "-" + DateTime.Now.AddMonths(-1).Date.ToString().Substring(3, 2) + "-" + DateTime.Now.AddMonths(-1).Date.ToString().Substring(0, 2));
-            }
+            //if (DateTime.Now.AddDays(1).Day == 1)
+            //{
+            //    ddHelper.UpdateDataset(DateTime.Now.AddMonths(-1).Date.ToString().Substring(6, 4) + "-" + DateTime.Now.AddMonths(-1).Date.ToString().Substring(3, 2) + "-" + DateTime.Now.AddMonths(-1).Date.ToString().Substring(0, 2));
+            //}
             
         }
 

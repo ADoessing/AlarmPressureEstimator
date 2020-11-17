@@ -339,16 +339,17 @@ namespace temperaturepredictor
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Dataset.Add(new TemperatureData { 
-                        Stores = Convert.ToSingle(reader["Stores"].ToString().Replace(',', '.')), 
-                        Alarms = Convert.ToSingle(reader["Alarms"].ToString().Replace(',', '.')), 
-                        AlarmItems = Convert.ToSingle(reader["AlarmItems"].ToString().Replace(',', '.')),
-                        TempMean = Convert.ToSingle(reader["TempMean"].ToString().Replace(',', '.')),
-                        Humidity = Convert.ToSingle(reader["Humidity"].ToString().Replace(',', '.')),
-                        Pressure = Convert.ToSingle(reader["Pressure"].ToString().Replace(',', '.')),
-                        TempMin = Convert.ToSingle(reader["TempMin"].ToString().Replace(',', '.')),
-                        TempMax = Convert.ToSingle(reader["TempMax"].ToString().Replace(',', '.'))
+                    Dataset.Add(new TemperatureData {
+                        Stores = Convert.ToSingle(reader["Stores"].ToString()),
+                        Alarms = Convert.ToSingle(reader["Alarms"].ToString()),
+                        AlarmItems = Convert.ToSingle(reader["AlarmItems"].ToString()),
+                        TempMean = Convert.ToSingle(reader["TempMean"].ToString()),
+                        Humidity = Convert.ToSingle(reader["Humidity"].ToString()),
+                        Pressure = Convert.ToSingle(reader["Pressure"].ToString()),
+                        TempMin = Convert.ToSingle(reader["TempMin"].ToString()),
+                        TempMax = Convert.ToSingle(reader["TempMax"].ToString())
                     });
+
                 }
                 conn.Close();
             }
