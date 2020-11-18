@@ -9,7 +9,7 @@ using System.Text;
 
 namespace temperaturepredictor
 {
-    public class DdHelper
+    public class DbHelper
     {
         private string ConnectionString = "Server=akctest01.database.windows.net;Database=akctestdb01;uid=DMIuserLogin;password=DmiLogin34!DK;Trusted_Connection=false";
         List<string> KnownGoodStations = new List<string>() {/* "06056", "06068", "06116", "06126", "06123", "06032", "06074", "06119", "06149", "06065",*/ "06124", "06058", "06041", "06049", "06147" };

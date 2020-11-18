@@ -14,21 +14,12 @@ namespace temperaturepredictor
 {
     class Program
     {
-        static async System.Threading.Tasks.Task Main(string[] args)
+        static void Main(string[] args)
         {
-            DdHelper ddHelper = new DdHelper();
+            DbHelper ddHelper = new DbHelper();
             var context = new MLContext();
 
             //Load data
-            DataViewSchema modelSchema;
-            ITransformer trainedModel;
-
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    Stream modelFile = await client.GetStreamAsync("https://cdn-117.anonfiles.com/teU1heocp7/d2750864-1604994784/model.zip");
-
-            //    trainedModel = context.Model.Load(modelFile, out modelSchema);
-            //}
 
             //var trainData = context.Data.LoadFromTextFile<TemperatureData>(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\LastSet4.csv",
             //    hasHeader: true, separatorChar: ',');
@@ -43,9 +34,7 @@ namespace temperaturepredictor
 
             var model = pipeline.Fit(testTrainSplit.TrainSet);
 
-            //context.Model.Save(model, trainData.Schema, "model.zip");
-
-            ////evaluate
+            //evaluate
             StreamWriter writer = new StreamWriter(@"C:\Users\Asmus\Source\Repos\ADoessing\AlarmPressureEstimator\Csvs\results.txt", true);
             var predictions = model.Transform(testTrainSplit.TestSet);
 
@@ -71,11 +60,7 @@ namespace temperaturepredictor
 
             var prediction = predictionFunc.Predict(newData);
 
-            //DdHelper ddHelper = new DdHelper();
             //ddHelper.SavePerfectAlarmDataset();
-
-            //var values = ddHelper.GetNewestWeatherforecastByStationId("06056", 1);
-            //Console.WriteLine(values.Item2.Substring(6, 4) + "-" + (Convert.ToInt32(values.Item2.ToString().Substring(3, 2)) + 1).ToString() + "-" + values.Item2.ToString().Substring(0, 2));
 
             //List<string> Stations = ddHelper.GetStations();
             //for (int i = 0; i < Stations.Count; i++)
@@ -92,7 +77,7 @@ namespace temperaturepredictor
 
             //Console.WriteLine("Færdig");
             //writer.WriteLine($"R^2 - {metrics.RSquared}" + ", " + $"RMSE - {metrics.RootMeanSquaredError}" + ", " + $"Prediction - {prediction.PredictedAlarmPressure}");
-       
+
             writer.Close();
             Console.WriteLine($"Prediction - {prediction.PredictedAlarmPressure}");
             //Console.ReadLine();
@@ -107,7 +92,7 @@ namespace temperaturepredictor
             //{
             //    ddHelper.UpdateDataset(DateTime.Now.AddMonths(-1).Date.ToString().Substring(6, 4) + "-" + DateTime.Now.AddMonths(-1).Date.ToString().Substring(3, 2) + "-" + DateTime.Now.AddMonths(-1).Date.ToString().Substring(0, 2));
             //}
-            
+
         }
 
     }
