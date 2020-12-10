@@ -6,8 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using temperaturepredictor.Logic;
 
-namespace temperaturepredictor
+namespace temperaturepredictor.Data
 {
     public class DbHelper
     {
@@ -15,12 +16,7 @@ namespace temperaturepredictor
         List<string> KnownGoodStations = new List<string>() {/* "06056", "06068", "06116", "06126", "06123", "06032", "06074", "06119", "06149", "06065",*/ "06124", "06058", "06041", "06049", "06147" };
         List<string> MoreStations = new List<string>() { /*"06159", "06135", "06132", "06186", "06082", "06073", "06072", "06102", "06183", "06096", "06188", "06138", "06141", "06031", "06081", "06093", "06168", "06088", "06169", "06136", "06174", "06154", "06193", "06156", "06019",*/ "06197", "06181", "06184", "06051"};
 
-        public string GetConnectionString()
-        {
-            return ConnectionString;
-        }
-
-        public List<string> GetStations()
+        internal List<string> GetStations()
         {
             List<string> stations = new List<string>();
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -77,7 +73,7 @@ namespace temperaturepredictor
             return oberservationDates;
         }
 
-        public void SaveExtendedAlarmDataset()
+        internal void SaveExtendedAlarmDataset()
         {
             List<string> stations = MoreStations;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -124,7 +120,7 @@ namespace temperaturepredictor
             }
         }
 
-        public void SavePerfectAlarmDataset()
+        internal void SavePerfectAlarmDataset()
         {
             List<string> stations = MoreStations;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -171,7 +167,7 @@ namespace temperaturepredictor
             }
         }
 
-        public void UpdateDataset(string date)
+        internal void UpdateDataset(string date)
         {
             List<string> newLines = new List<string>();
             List<string> stations = GetStations();
@@ -225,7 +221,7 @@ namespace temperaturepredictor
             }
         }
 
-        public void SaveAlarmDataset()
+        internal void SaveAlarmDataset()
         {
             List<string> stations = KnownGoodStations;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -263,7 +259,7 @@ namespace temperaturepredictor
         }
 
 
-        public (TemperatureData, string, int) GetNewestWeatherforecastByStationId(string StationId, int day)
+        internal (TemperatureData, string, int) GetNewestWeatherforecastByStationId(string StationId, int day)
         {
             TemperatureData temperatureData = new TemperatureData { };
             string date = "";
@@ -296,7 +292,7 @@ namespace temperaturepredictor
             return (temperatureData, date, forecastDay);
         }
 
-        public void UploadNewestAlarmPrediction(string Date, string StationId, int Alarms)
+        internal void UploadNewestAlarmPrediction(string Date, string StationId, int Alarms)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
@@ -312,7 +308,7 @@ namespace temperaturepredictor
 
 
 
-        public int GetRegionIdFromStationId(string StationId)
+        internal int GetRegionIdFromStationId(string StationId)
         {
             int regionId = 0;
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -329,7 +325,7 @@ namespace temperaturepredictor
         }
 
 
-        public List<TemperatureData> GetDataSet()
+        internal List<TemperatureData> GetDataSet()
         {
             List<TemperatureData> Dataset = new List<TemperatureData>(); 
             using(SqlConnection conn = new SqlConnection(ConnectionString))
@@ -357,7 +353,7 @@ namespace temperaturepredictor
         }
 
 
-        public void fillDataSetTable(int Stores, int Alarms, int AlarmItems, double TempMean, double Humidity, double Pressure, double TempMin, double TempMax)
+        internal void fillDataSetTable(int Stores, int Alarms, int AlarmItems, double TempMean, double Humidity, double Pressure, double TempMin, double TempMax)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
