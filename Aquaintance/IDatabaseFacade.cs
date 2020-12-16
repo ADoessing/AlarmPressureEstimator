@@ -11,7 +11,7 @@ namespace temperaturepredictor.Aquaintance
         public (TemperatureData, string, int) GetNewestWeatherforecastByStationId(string StationId, int day);
         public void UploadNewestAlarmPrediction(string Date, string StationId, int Alarms);
         public List<TemperatureData> GetDataSet();
-        public void UpdateDataset(string date)
+        public void UpdateDataset(string date);
 
     }
 }

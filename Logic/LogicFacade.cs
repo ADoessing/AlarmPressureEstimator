@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using temperaturepredictor.Aquaintance;
+using temperaturepredictor.Data;
 
 namespace temperaturepredictor.Logic
 {
@@ -12,6 +13,7 @@ namespace temperaturepredictor.Logic
         private IDatabaseFacade databaseFacade;
         private LogicFacade()
         {
+            databaseFacade = DatabaseFacade.GetInstance();
             model = new Model(databaseFacade.GetDataSet());
         }
 
