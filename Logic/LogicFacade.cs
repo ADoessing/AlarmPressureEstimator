@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using temperaturepredictor.Aquaintance;
-using temperaturepredictor.Data;
+using alarmpressureestimator.Aquaintance;
+using alarmpressureestimator.Data;
 
-namespace temperaturepredictor.Logic
+namespace alarmpressureestimator.Logic
 {
     class LogicFacade : ILogicFacade
     {

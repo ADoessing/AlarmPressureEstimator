@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using temperaturepredictor.Aquaintance;
-using temperaturepredictor.Logic;
+using alarmpressureestimator.Aquaintance;
+using alarmpressureestimator.Logic;
 
-namespace temperaturepredictor.Data
+namespace alarmpressureestimator.Data
 {
     public class DatabaseFacade : IDatabaseFacade
     {

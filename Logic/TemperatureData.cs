@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML.Data;
 
-namespace temperaturepredictor.Logic
+namespace alarmpressureestimator.Logic
 {
     public class TemperatureData
     {

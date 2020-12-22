@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace temperaturepredictor.Logic
+namespace alarmpressureestimator.Logic
 {
     public class Model
     {

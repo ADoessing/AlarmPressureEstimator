@@ -10,11 +10,11 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using temperaturepredictor.Data;
-using temperaturepredictor.Aquaintance;
-using temperaturepredictor.Logic;
+using alarmpressureestimator.Data;
+using alarmpressureestimator.Aquaintance;
+using alarmpressureestimator.Logic;
 
-namespace temperaturepredictor.Starter
+namespace alarmpressureestimator.Starter
 {
     class Program
     {
@@ -37,6 +37,10 @@ namespace temperaturepredictor.Starter
                 TempMax = 17.2F
             }));
 
+            Console.WriteLine("ALL");
+            //logicFacade.CreatePredictionsForAllStations();
+            Console.WriteLine("Done");
+
             //while (true)
             //{
             //    var values2 = databaseFacade.GetNewestWeatherforecastByStationId("06123", 1);
@@ -50,7 +54,7 @@ namespace temperaturepredictor.Starter
             //        logicFacade.CreatePredictionsForAllStations();
             //        yesterday = values.Item2.Substring(6, 4) + "-" + values.Item2.ToString().Substring(3, 2) + "-" + values.Item2.ToString().Substring(0, 2);
             //    }
-                
+
 
 
             //    if (DateTime.Now.AddDays(1).Day == 1)
@@ -68,7 +72,7 @@ namespace temperaturepredictor.Starter
             //    {
             //        Thread.Sleep(sleeptimer);
             //    }
-                
+
             //}
         }
 

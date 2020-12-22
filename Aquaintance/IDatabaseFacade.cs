@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using temperaturepredictor.Logic;
+using alarmpressureestimator.Logic;
 
-namespace temperaturepredictor.Aquaintance
+namespace alarmpressureestimator.Aquaintance
 {
     interface IDatabaseFacade
     {
