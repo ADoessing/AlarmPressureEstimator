@@ -35,7 +35,13 @@ namespace alarmpressureestimator.Starter
                 if (String.Equals(today, yesterday))
                 {
                     Thread.Sleep(1800000);
+                    if (!String.Equals(today, yesterday))
+                    {
+                        logicFacade.CreatePredictionsForAllStations();
+                        yesterday = values.Item2.Substring(6, 4) + "-" + values.Item2.ToString().Substring(3, 2) + "-" + values.Item2.ToString().Substring(0, 2);
+                    }
                 }
+
                 else
                 {
                     logicFacade.CreatePredictionsForAllStations();
