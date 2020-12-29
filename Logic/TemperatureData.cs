@@ -5,27 +5,27 @@ namespace alarmpressureestimator.Logic
     public class TemperatureData
     {
         [LoadColumn(0)]
-        internal float Stores;
+        public float Stores;
 
         [LoadColumn(1), ColumnName("Label")]
-        internal float Alarms;
+        public float Alarms;
 
         [LoadColumn(2)]
-        internal float AlarmItems;
+        public float AlarmItems;
 
         [LoadColumn(3)]
-        internal float TempMean;
+        public float TempMean;
 
         [LoadColumn(4)]
-        internal float Humidity;
+        public float Humidity;
 
         [LoadColumn(5)]
-        internal float Pressure;
+        public float Pressure;
 
         [LoadColumn(6)]
-        internal float TempMin;
+        public float TempMin;
 
         [LoadColumn(7)]
-        internal float TempMax;
+        public float TempMax;
     }
 }

@@ -6,6 +6,6 @@ namespace alarmpressureestimator.Logic
     {
 
         [ColumnName("Score")]
-        internal float PredictedAlarmPressure { get; set; }
+        public float PredictedAlarmPressure { get; set; }
     }
 }
